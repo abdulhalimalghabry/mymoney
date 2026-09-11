@@ -1,0 +1,11 @@
+@import "tailwindcss";
+
+@layer base {
+  html, body {
+    font-family: 'Tajawal', sans-serif;
+    direction: rtl;
+    text-align: right;
+    background-color: #f8fafc;
+    color: #0f172a;
+  }
+}

@@ -1,0 +1,123 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Default deny all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function isValidCurrency(curr) {
+      return curr in ['AED', 'ETB', 'KES', 'USD'];
+    }
+
+    // User root document and subcollections
+    match /users/{userId} {
+      allow read, write: if isOwner(userId);
+
+      match /accounts/{accountId} {
+        allow read: if isOwner(userId);
+        allow create, update: if isOwner(userId)
+          && isValidId(accountId)
+          && incoming().userId == userId
+          && incoming().name is string && incoming().name.size() <= 100
+          && isValidCurrency(incoming().currency)
+          && incoming().currentBalance is number;
+        allow delete: if isOwner(userId) && isValidId(accountId);
+      }
+
+      match /transactions/{transactionId} {
+        allow read: if isOwner(userId);
+        allow create, update: if isOwner(userId)
+          && isValidId(transactionId)
+          && incoming().userId == userId
+          && incoming().amount is number
+          && isValidCurrency(incoming().currency)
+          && incoming().type in ['income', 'expense', 'transfer', 'saving', 'investment', 'debt_payment'];
+        allow delete: if isOwner(userId) && isValidId(transactionId);
+      }
+
+      match /categories/{categoryId} {
+        allow read: if isOwner(userId);
+        allow create, update: if isOwner(userId)
+          && isValidId(categoryId)
+          && incoming().userId == userId
+          && incoming().name is string && incoming().name.size() <= 100
+          && incoming().type in ['income', 'expense'];
+        allow delete: if isOwner(userId) && isValidId(categoryId);
+      }
+
+      match /budgets/{budgetId} {
+        allow read: if isOwner(userId);
+        allow create, update: if isOwner(userId)
+          && isValidId(budgetId)
+          && incoming().userId == userId
+          && incoming().amount is number
+          && isValidCurrency(incoming().currency);
+        allow delete: if isOwner(userId) && isValidId(budgetId);
+      }
+
+      match /savingsGoals/{goalId} {
+        allow read: if isOwner(userId);
+        allow create, update: if isOwner(userId)
+          && isValidId(goalId)
+          && incoming().userId == userId
+          && incoming().targetAmount is number
+          && incoming().currentAmount is number
+          && isValidCurrency(incoming().currency);
+        allow delete: if isOwner(userId) && isValidId(goalId);
+      }
+
+      match /investments/{investmentId} {
+        allow read: if isOwner(userId);
+        allow create, update: if isOwner(userId)
+          && isValidId(investmentId)
+          && incoming().userId == userId
+          && incoming().amountInvested is number
+          && incoming().currentValue is number
+          && isValidCurrency(incoming().currency);
+        allow delete: if isOwner(userId) && isValidId(investmentId);
+      }
+
+      match /debts/{debtId} {
+        allow read: if isOwner(userId);
+        allow create, update: if isOwner(userId)
+          && isValidId(debtId)
+          && incoming().userId == userId
+          && incoming().totalAmount is number
+          && incoming().paidAmount is number
+          && incoming().remainingAmount is number
+          && isValidCurrency(incoming().currency);
+        allow delete: if isOwner(userId) && isValidId(debtId);
+      }
+
+      match /settings/{settingId} {
+        allow read: if isOwner(userId);
+        allow create, update: if isOwner(userId)
+          && isValidId(settingId)
+          && incoming().userId == userId;
+        allow delete: if isOwner(userId) && isValidId(settingId);
+      }
+
+      match /{subcollection=**} {
+        allow read, write: if isOwner(userId);
+      }
+    }
+  }
+}

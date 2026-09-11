@@ -1,0 +1,189 @@
+{
+  "entities": {
+    "Account": {
+      "title": "Account",
+      "description": "Financial accounts and wallets belonging to the user",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "userId": { "type": "string", "maxLength": 128 },
+        "name": { "type": "string", "maxLength": 100 },
+        "type": { "type": "string", "enum": ["cash", "bank", "savings", "investment", "ewallet", "other"] },
+        "currency": { "type": "string", "enum": ["AED", "ETB", "KES", "USD"] },
+        "currentBalance": { "type": "number" },
+        "initialBalance": { "type": "number" },
+        "description": { "type": "string", "maxLength": 250 },
+        "isActive": { "type": "boolean" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["userId", "name", "type", "currency", "currentBalance"]
+    },
+    "Transaction": {
+      "title": "Transaction",
+      "description": "Income, expense, transfer, saving, investment or debt payment record",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "userId": { "type": "string", "maxLength": 128 },
+        "type": { "type": "string", "enum": ["income", "expense", "transfer", "saving", "investment", "debt_payment"] },
+        "amount": { "type": "number" },
+        "currency": { "type": "string", "enum": ["AED", "ETB", "KES", "USD"] },
+        "source": { "type": "string", "maxLength": 100 },
+        "category": { "type": "string", "maxLength": 100 },
+        "accountId": { "type": "string", "maxLength": 128 },
+        "toAccountId": { "type": "string", "maxLength": 128 },
+        "date": { "type": "string", "maxLength": 30 },
+        "description": { "type": "string", "maxLength": 250 },
+        "notes": { "type": "string", "maxLength": 500 },
+        "receiptUrl": { "type": "string", "maxLength": 500 },
+        "relatedGoalId": { "type": "string", "maxLength": 128 },
+        "relatedInvestmentId": { "type": "string", "maxLength": 128 },
+        "relatedDebtId": { "type": "string", "maxLength": 128 },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["userId", "type", "amount", "currency", "accountId", "date"]
+    },
+    "Category": {
+      "title": "Category",
+      "description": "User defined expense and income categories",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "userId": { "type": "string", "maxLength": 128 },
+        "name": { "type": "string", "maxLength": 100 },
+        "type": { "type": "string", "enum": ["expense", "income"] },
+        "color": { "type": "string", "maxLength": 30 },
+        "icon": { "type": "string", "maxLength": 50 },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["userId", "name", "type"]
+    },
+    "Budget": {
+      "title": "Budget",
+      "description": "Monthly category budget targets",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "userId": { "type": "string", "maxLength": 128 },
+        "category": { "type": "string", "maxLength": 100 },
+        "amount": { "type": "number" },
+        "currency": { "type": "string", "enum": ["AED", "ETB", "KES", "USD"] },
+        "month": { "type": "string", "maxLength": 10 },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["userId", "category", "amount", "currency", "month"]
+    },
+    "SavingsGoal": {
+      "title": "SavingsGoal",
+      "description": "User savings and financial milestones",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "userId": { "type": "string", "maxLength": 128 },
+        "goalName": { "type": "string", "maxLength": 100 },
+        "targetAmount": { "type": "number" },
+        "currentAmount": { "type": "number" },
+        "currency": { "type": "string", "enum": ["AED", "ETB", "KES", "USD"] },
+        "deadline": { "type": "string", "maxLength": 30 },
+        "description": { "type": "string", "maxLength": 250 },
+        "status": { "type": "string", "enum": ["active", "completed", "paused"] },
+        "category": { "type": "string", "maxLength": 50 },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["userId", "goalName", "targetAmount", "currentAmount", "currency", "status"]
+    },
+    "Investment": {
+      "title": "Investment",
+      "description": "User investment holdings and valuations",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "userId": { "type": "string", "maxLength": 128 },
+        "investmentName": { "type": "string", "maxLength": 100 },
+        "type": { "type": "string", "enum": ["business", "stocks", "real_estate", "gold", "other"] },
+        "amountInvested": { "type": "number" },
+        "currentValue": { "type": "number" },
+        "currency": { "type": "string", "enum": ["AED", "ETB", "KES", "USD"] },
+        "date": { "type": "string", "maxLength": 30 },
+        "notes": { "type": "string", "maxLength": 500 },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["userId", "investmentName", "type", "amountInvested", "currentValue", "currency"]
+    },
+    "Debt": {
+      "title": "Debt",
+      "description": "User liabilities, debts, or loans",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "userId": { "type": "string", "maxLength": 128 },
+        "personOrOrg": { "type": "string", "maxLength": 100 },
+        "type": { "type": "string", "enum": ["borrowed", "lent"] },
+        "totalAmount": { "type": "number" },
+        "paidAmount": { "type": "number" },
+        "remainingAmount": { "type": "number" },
+        "currency": { "type": "string", "enum": ["AED", "ETB", "KES", "USD"] },
+        "dueDate": { "type": "string", "maxLength": 30 },
+        "description": { "type": "string", "maxLength": 250 },
+        "status": { "type": "string", "enum": ["pending", "partially_paid", "paid", "overdue"] },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["userId", "personOrOrg", "totalAmount", "paidAmount", "remainingAmount", "currency", "status"]
+    },
+    "UserSettings": {
+      "title": "UserSettings",
+      "description": "User application settings and exchange rates",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "userId": { "type": "string", "maxLength": 128 },
+        "baseCurrency": { "type": "string", "enum": ["AED", "ETB", "KES", "USD"] },
+        "exchangeRates": { "type": "string" },
+        "theme": { "type": "string", "enum": ["light", "dark", "system"] },
+        "language": { "type": "string", "enum": ["ar", "en"] },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["userId", "baseCurrency"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}/accounts/{accountId}": {
+      "schema": { "$ref": "#/entities/Account" },
+      "description": "Financial accounts and wallets"
+    },
+    "/users/{userId}/transactions/{transactionId}": {
+      "schema": { "$ref": "#/entities/Transaction" },
+      "description": "Financial transaction history"
+    },
+    "/users/{userId}/categories/{categoryId}": {
+      "schema": { "$ref": "#/entities/Category" },
+      "description": "Income and expense categories"
+    },
+    "/users/{userId}/budgets/{budgetId}": {
+      "schema": { "$ref": "#/entities/Budget" },
+      "description": "Monthly budget targets by category"
+    },
+    "/users/{userId}/savingsGoals/{goalId}": {
+      "schema": { "$ref": "#/entities/SavingsGoal" },
+      "description": "Savings and financial milestones"
+    },
+    "/users/{userId}/investments/{investmentId}": {
+      "schema": { "$ref": "#/entities/Investment" },
+      "description": "Investment portfolio records"
+    },
+    "/users/{userId}/debts/{debtId}": {
+      "schema": { "$ref": "#/entities/Debt" },
+      "description": "Liabilities and debt tracking"
+    },
+    "/users/{userId}/settings/{settingId}": {
+      "schema": { "$ref": "#/entities/UserSettings" },
+      "description": "User configuration, base currency and rates"
+    }
+  }
+}

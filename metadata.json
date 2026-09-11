@@ -1,0 +1,6 @@
+{
+  "name": "My Finance Manager",
+  "description": "نظام شامل وآمن لإدارة الأموال الشخصية، الحسابات، الدخل، المصروفات، المدخرات، الاستثمارات والديون مع لوحة تحكم وتقارير متقدمة",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
